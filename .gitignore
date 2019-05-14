@@ -1,5 +1,6 @@
 .vscode
 
+*.pyc
 bazel-*
 deep-learning
 env-0

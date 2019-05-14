@@ -1,19 +1,25 @@
 filegroup(
-  name = "data",
+  name = "random_data",
   srcs = ["data.csv"]
+)
+
+filegroup(
+  name = "mnist_data",
+  srcs = ["data/mnist.npz"],
+  visibility = ["//visibility:public"]
 )
 
 py_binary(
   name = "test_script",
   srcs = ["test_script.py"],
-  data = [":data"]
+  data = [":random_data"]
 )
 
 
 py_binary(
   name = "test_script_deps",
   srcs = ["test_script_deps.py"],
-  data = [":data"]
+  data = [":random_data"]
 )
 
 

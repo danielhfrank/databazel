@@ -1,4 +1,4 @@
-load("//:databazel.bzl", "train")
+load("//:databazel.bzl", "model")
 
 py_library(
     name = "lib",
@@ -13,7 +13,7 @@ py_binary(
     args = ["data/mnist.npz", "/Users/df/code/databazel/model.h5py"]
 )
 
-train(
+model(
     name = "bzl_training",
     deps = [":lib"],
     train_executable = ":train",

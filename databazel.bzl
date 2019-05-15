@@ -19,7 +19,7 @@ def _train_impl(ctx):
         executable = ctx.executable.train_executable
     )
 
-train = rule(
+model = rule(
     implementation = _train_impl,
     attrs = {
         "deps": attr.label_list(),
@@ -32,5 +32,4 @@ train = rule(
         ),
         "model_output_path": attr.output()
     },
-    executable = True,
 )

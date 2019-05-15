@@ -5,7 +5,6 @@ import keras
 from keras.models import Sequential
 from keras.layers import Dense, Dropout, Flatten
 from keras.layers import Conv2D, MaxPooling2D
-import keras.backend as K
 import tensorflow as tf
 
 from mnist.lib import load_train_data, prep_x_data, prep_y_data
@@ -16,11 +15,6 @@ epochs = 1
 
 # Should be able to infer...
 num_classes = 10
-
-
-def get_categorical_accuracy_keras(y_true, y_pred):
-    # https://stackoverflow.com/questions/46305252/valueerror-dimension-1-must-be-in-the-range-0-2-in-keras  # noqa
-    return K.mean(K.equal(K.argmax(y_true, axis=1), K.argmax(y_pred, axis=1)))
 
 
 def train(x_train, y_train):
@@ -40,7 +34,7 @@ def train(x_train, y_train):
 
     model.compile(loss=keras.losses.categorical_crossentropy,
                   optimizer=keras.optimizers.Adadelta(),
-                  metrics=[get_categorical_accuracy_keras])
+                  metrics=[])  # See comment in evaluate.py on cat accuracy fxn
 
     model.fit(x_train, y_train,
               batch_size=batch_size,

@@ -1,3 +1,5 @@
+load("//:databazel.bzl", "empty")
+
 filegroup(
   name = "random_data",
   srcs = ["data.csv"]

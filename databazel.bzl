@@ -9,13 +9,17 @@ empty = rule(implementation = _empty_impl)
 
 
 def _train_impl(ctx):
-    args = [ctx.file.training_data.path, ctx.outputs.model_output_path.path]
+    args = [
+        '--data', ctx.file.training_data.path,
+        '--model-output-filename', ctx.outputs.model.basename,
+        '--model-output-dir', ctx.outputs.model.dirname
+        ]
     
     ctx.actions.run(
         inputs = [ctx.file.training_data],
-        outputs = [ctx.outputs.model_output_path],
+        outputs = [ctx.outputs.model] + ctx.outputs.additional_outputs,
         arguments = args,
-        progress_message = "Running training script",
+        progress_message = "Running training script with args %s" % args,
         executable = ctx.executable.train_executable
     )
 
@@ -30,6 +34,7 @@ model = rule(
             cfg = "target",
             executable = True
         ),
-        "model_output_path": attr.output()
+        "model": attr.output(),
+        "additional_outputs": attr.output_list()
     },
 )

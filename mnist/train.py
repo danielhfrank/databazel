@@ -1,4 +1,5 @@
-import sys
+from argparse import ArgumentParser
+import os
 
 import keras
 from keras.models import Sequential
@@ -35,7 +36,6 @@ def train(x_train, y_train):
     model.add(Flatten())
     model.add(Dense(128, activation='relu'))
     model.add(Dropout(0.5))
-    # model.add(Dense(num_classes, activation='softmax'))
     model.add(Dense(num_classes, activation=tf.nn.softmax))
 
     model.compile(loss=keras.losses.categorical_crossentropy,
@@ -49,7 +49,7 @@ def train(x_train, y_train):
     return model
 
 
-def main(data_path, model_out_path):
+def main(data_path, model_filename, output_dir):
     x_train, y_train = load_train_data(data_path)
     x_train = prep_x_data(x_train)
     # Will need to pass this to keras later on
@@ -60,13 +60,20 @@ def main(data_path, model_out_path):
 
     # First save model arch only so that I can read it
     print 'Saving model architecture to json'
+    model_arch_output_path = os.path.join(output_dir, 'model.json')
     model_json = model.to_json()
-    with open('model.json', 'w') as f:
+    with open(model_arch_output_path, 'w') as f:
         f.write(model_json)
 
     print 'Writing entire model (with weights)'
+    model_out_path = os.path.join(output_dir, model_filename)
     model.save(model_out_path)
 
 
 if __name__ == "__main__":
-    main(*sys.argv[1:])
+    parser = ArgumentParser()
+    parser.add_argument('--data')
+    parser.add_argument('--model-output-filename')
+    parser.add_argument('--model-output-dir')
+    args = parser.parse_args()
+    main(args.data, args.model_output_filename, args.model_output_dir)

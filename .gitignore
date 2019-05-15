@@ -3,6 +3,7 @@
 *.pyc
 bazel-*
 deep-learning
+py2freshenv
 env-0
 env-1
 

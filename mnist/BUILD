@@ -10,7 +10,7 @@ py_binary(
     deps = [":lib"],
     srcs = ["train.py"],
     data = ["//:mnist_data"],
-    args = ["data/mnist.npz", "/Users/df/code/databazel/model.h5py"]
+    # args = ["data/mnist.npz", "/Users/df/code/databazel/model.h5py"]
 )
 
 model(
@@ -18,5 +18,6 @@ model(
     deps = [":lib"],
     train_executable = ":train",
     training_data = "//:mnist_data",
-    model_output_path = "bzl_model.h5py"
+    model = "bzl_model.h5py",
+    additional_outputs = ["model.json"]
 )

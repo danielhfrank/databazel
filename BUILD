@@ -28,7 +28,7 @@ py_binary(
 py_runtime(
   # Minimal bare environment
   name = "env-1",
-  # Do this to exlcude file names with spaces, which bazel will reject.
+  # Do this to exclude file names with spaces, which bazel will reject.
   files = [x for x in glob(["env-1/**"]) if ' ' not in x],
   interpreter = "env-1/bin/python",
 )
@@ -37,7 +37,7 @@ py_runtime(
 py_runtime(
   # Artisanal DL environment
   name = "deep-learning",
-  # Do this to exlcude file names with spaces, which bazel will reject.
+  # Do this to exclude file names with spaces, which bazel will reject.
   files = [x for x in glob(["deep-learning/**"]) if ' ' not in x],
   interpreter = "deep-learning/bin/python",
   visibility = ["//visibility:public"]

@@ -38,7 +38,6 @@ def train(x_train, y_train):
     # model.add(Dense(num_classes, activation='softmax'))
     model.add(Dense(num_classes, activation=tf.nn.softmax))
 
-
     model.compile(loss=keras.losses.categorical_crossentropy,
                   optimizer=keras.optimizers.Adadelta(),
                   metrics=[get_categorical_accuracy_keras])
@@ -67,7 +66,6 @@ def main(data_path, model_out_path):
 
     print 'Writing entire model (with weights)'
     model.save(model_out_path)
-
 
 
 if __name__ == "__main__":

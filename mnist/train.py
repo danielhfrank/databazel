@@ -17,7 +17,7 @@ epochs = 1
 num_classes = 10
 
 
-def train(x_train, y_train):
+def train(x_train, y_train, hyperparams):
     input_shape = x_train.shape[1:]
 
     model = Sequential()
@@ -28,7 +28,11 @@ def train(x_train, y_train):
     model.add(MaxPooling2D(pool_size=(2, 2)))
     model.add(Dropout(0.25))
     model.add(Flatten())
-    model.add(Dense(128, activation='relu'))
+
+    # dense_size = 128
+    dense_size = int(hyperparams)  # TODO will evolve here into more general specification
+    model.add(Dense(dense_size, activation='relu'))
+    
     model.add(Dropout(0.5))
     model.add(Dense(num_classes, activation=tf.nn.softmax))
 
@@ -43,13 +47,13 @@ def train(x_train, y_train):
     return model
 
 
-def main(data_path, model_output_path):
+def main(data_path, model_output_path, hyperparams):
     x_train, y_train = load_train_data(data_path)
     x_train = prep_x_data(x_train)
 
     y_train = prep_y_data(y_train)
 
-    model = train(x_train, y_train)
+    model = train(x_train, y_train, hyperparams)
 
     print 'Writing entire model (with weights)'
     model.save(model_output_path)
@@ -59,5 +63,6 @@ if __name__ == "__main__":
     parser = ArgumentParser()
     parser.add_argument('--data')
     parser.add_argument('--model-output-path')
+    parser.add_argument('--hyperparams')
     args = parser.parse_args()
-    main(args.data, args.model_output_path)
+    main(args.data, args.model_output_path, args.hyperparams)

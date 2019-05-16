@@ -26,6 +26,9 @@ model(
     train_executable = ":train",
     training_data = "//:mnist_data",
     model = "bzl_model.h5py",
+    hyperparams = {
+        "dense_size": "128"
+    }
 )
 
 evaluate(

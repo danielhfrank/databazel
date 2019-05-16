@@ -1,8 +1,11 @@
 
 def _train_impl(ctx):
+    print('**')
+    print(ctx.attr.hyperparams)
     args = [
         '--data', ctx.file.training_data.path,
         '--model-output-path', ctx.outputs.model.path,
+        '--hyperparams', ctx.attr.hyperparams.values()[0]
         ]
     
     ctx.actions.run(
@@ -25,6 +28,7 @@ model = rule(
             executable = True
         ),
         "model": attr.output(),
+        "hyperparams": attr.string_dict()
     },
 )
 

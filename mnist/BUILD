@@ -41,7 +41,7 @@ evaluate(
     eval_executable = ":evaluate",
     test_data = "//:mnist_data",
     outputs = ["results.json"],
-    model = ":bzl_training"
+    model = ":bzl_training__dense_size_64"
 )
 
 hyperparam_search(

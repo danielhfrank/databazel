@@ -9,23 +9,47 @@ def insert_param_summary(filename, param_summary):
     basename, extn = filename.rsplit('.', 1)
     return basename + '__' + param_summary + '.' + extn
 
-# Rule definitions
+# Internal functions
 
-def _model_impl(ctx):
-    hyperparams_struct = struct(**ctx.attr.hyperparams)
+def _model_internal(data, model_output, hyperparams, ctx):
+    hyperparams_struct = struct(**hyperparams)
     args = [
-        '--data', ctx.file.training_data.path,
-        '--model-output-path', ctx.outputs.model.path,
+        '--data', data.path,
+        '--model-output-path', model_output.path,
         '--hyperparams', hyperparams_struct.to_json()
         ]
-    
+
     ctx.actions.run(
-        inputs = [ctx.file.training_data],
-        outputs = [ctx.outputs.model],
+        inputs = [data],
+        outputs = [model_output],
         arguments = args,
         progress_message = "Running training script with args %s" % args,
         executable = ctx.executable.train_executable
     )
+
+def _eval_internal(data, model, outputs, ctx):
+    args = [
+        '--data-path', data.path,
+        '--model-path', model.path,
+        '--output-dir', outputs[0].dirname
+    ]
+    ctx.actions.run(
+        inputs = [data, model],
+        outputs = outputs,
+        arguments = args,
+        progress_message = "Running training script with args %s" % args,
+        executable = ctx.executable.eval_executable
+    )
+
+# Rule definitions
+
+def _model_impl(ctx):
+    _model_internal(
+        ctx.file.training_data,
+        ctx.outputs.model,
+        ctx.attr.hyperparams,
+        ctx
+        )
 
 model = rule(
     implementation = _model_impl,
@@ -68,17 +92,11 @@ def model_with_hyperparam_values(name,
 
 
 def _evaluate_impl(ctx):
-    args = [
-        '--data-path', ctx.file.test_data.path,
-        '--model-path', ctx.file.model.path,
-        '--output-dir', ctx.outputs.outputs[0].dirname
-    ]
-    ctx.actions.run(
-        inputs = [ctx.file.test_data, ctx.file.model],
-        outputs = ctx.outputs.outputs,
-        arguments = args,
-        progress_message = "Running training script with args %s" % args,
-        executable = ctx.executable.eval_executable
+    _eval_internal(
+        ctx.file.test_data,
+        ctx.file.model,
+        ctx.outputs.outputs,
+        ctx
     )
 
 

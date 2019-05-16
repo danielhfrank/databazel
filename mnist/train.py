@@ -1,5 +1,5 @@
 from argparse import ArgumentParser
-import os
+import json
 
 import keras
 from keras.models import Sequential
@@ -30,7 +30,7 @@ def train(x_train, y_train, hyperparams):
     model.add(Flatten())
 
     # dense_size = 128
-    dense_size = int(hyperparams)  # TODO will evolve here into more general specification
+    dense_size = int(hyperparams['dense_size'])
     model.add(Dense(dense_size, activation='relu'))
     
     model.add(Dropout(0.5))
@@ -63,6 +63,6 @@ if __name__ == "__main__":
     parser = ArgumentParser()
     parser.add_argument('--data')
     parser.add_argument('--model-output-path')
-    parser.add_argument('--hyperparams')
+    parser.add_argument('--hyperparams', type=json.loads)
     args = parser.parse_args()
     main(args.data, args.model_output_path, args.hyperparams)

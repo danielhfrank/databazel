@@ -32,7 +32,7 @@ def train(x_train, y_train, hyperparams):
     # dense_size = 128
     dense_size = int(hyperparams['dense_size'])
     model.add(Dense(dense_size, activation='relu'))
-    
+
     model.add(Dropout(0.5))
     model.add(Dense(num_classes, activation=tf.nn.softmax))
 

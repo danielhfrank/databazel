@@ -1,5 +1,5 @@
 
-def _train_impl(ctx):
+def _model_impl(ctx):
     hyperparams_struct = struct(**ctx.attr.hyperparams)
     args = [
         '--data', ctx.file.training_data.path,
@@ -16,7 +16,7 @@ def _train_impl(ctx):
     )
 
 model = rule(
-    implementation = _train_impl,
+    implementation = _model_impl,
     attrs = {
         "deps": attr.label_list(),
         "training_data": attr.label( # TODO turn this into a keyed list or something
@@ -30,6 +30,27 @@ model = rule(
         "hyperparams": attr.string_dict()
     },
 )
+
+def model_with_hyperparam_values(name,
+                                 deps,
+                                 training_data,
+                                 train_executable,
+                                 model_output,
+                                 hyperparam_values_dict):
+    # This impl is totally wrong but I'm going to just try to get a macro working
+    for hyperparam_name, hyperparam_values in hyperparam_values_dict.items():
+        for hyperparam_val in hyperparam_values:
+            these_values = {hyperparam_name: hyperparam_val}
+            param_summary = '__'.join([hpname + '_' + val for hpname, val in these_values.items()])
+            new_name = name + "__" + param_summary
+            model(
+                name = new_name,
+                deps = deps,
+                training_data = training_data,
+                train_executable = train_executable,
+                model = model_output,
+                hyperparams = these_values
+            )
 
 
 def _evaluate_impl(ctx):

@@ -1,5 +1,7 @@
 load("//:databazel.bzl", "model")
 load("//:databazel.bzl", "evaluate")
+load("//:databazel.bzl", "model_with_hyperparam_values")
+
 
 py_library(
     name = "lib",
@@ -20,14 +22,14 @@ py_binary(
     srcs = ["evaluate.py"],
 )
 
-model(
+model_with_hyperparam_values(
     name = "bzl_training",
     deps = [":lib"],
     train_executable = ":train",
     training_data = "//:mnist_data",
-    model = "bzl_model.h5py",
-    hyperparams = {
-        "dense_size": "128"
+    model_output = "bzl_model.h5py",
+    hyperparam_values_dict = {
+        "dense_size": ["128"]
     }
 )
 

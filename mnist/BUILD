@@ -50,7 +50,7 @@ hyperparam_search(
     eval_executable = ":evaluate",
     train_executable = ":train",
     data = "//:mnist_data",
-    eval_outputs = ["results.json"],
+    eval_output = "result.json",
     hyperparam_values = {"dense_size": ["64", "128"]},
     model_name = "search_model.h5py"
 )

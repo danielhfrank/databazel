@@ -24,21 +24,23 @@ def _model_internal(data, model_output, hyperparams, ctx):
         outputs = [model_output],
         arguments = args,
         progress_message = "Running training script with args %s" % args,
-        executable = ctx.executable.train_executable
+        executable = ctx.executable.train_executable,
+        mnemonic = "MODEL%s" % mk_param_summary(hyperparams).replace('_', '')
     )
 
-def _eval_internal(data, model, outputs, ctx):
+def _eval_internal(data, model, output, ctx):
     args = [
         '--data-path', data.path,
         '--model-path', model.path,
-        '--output-dir', outputs[0].dirname
+        '--output-file', output.path
     ]
     ctx.actions.run(
         inputs = [data, model],
-        outputs = outputs,
+        outputs = [output],
         arguments = args,
         progress_message = "Running training script with args %s" % args,
-        executable = ctx.executable.eval_executable
+        executable = ctx.executable.eval_executable,
+        mnemonic = "EVAL%s" % model.basename.rsplit('.', 1)[0].replace('_', '')
     )
 
 # Rule definitions
@@ -125,32 +127,30 @@ def _hyperparam_search_impl(ctx):
             param_summary = mk_param_summary(these_values)
             new_name = ctx.attr.name + "__" + param_summary
             new_model_name = insert_param_summary(ctx.attr.model_name, param_summary)
+            # This is going to create the new model file, which we need to declare...
+            new_model_file = ctx.actions.declare_file(new_model_name)
             # Create the model training instance for this run
-            model(
-                name = new_model_name,
-                deps = ctx.attr.deps,
-                training_data = ctx.attr.data,
-                train_executable = ctx.attr.train_executable,
-                model = new_model_name,
-                hyperparams = these_values
+            _model_internal(
+                data = ctx.file.data,
+                model_output = new_model_file,
+                hyperparams = these_values,
+                ctx = ctx
             )
+
             # And then also create an eval instance
-            new_eval_outputs = [insert_param_summary(x, param_summary) for x in ctx.attr.eval_outputs]
-            eval_task = evaluate(
-                name = new_name,
-                deps = ctx.attr.deps,
-                test_data = ctx.attr.data,
-                eval_executable = ctx.attr.eval_executable,
-                outputs = ctx.attr.eval_outputs
+            new_eval_output = ctx.actions.declare_file(
+                    insert_param_summary(ctx.attr.eval_output, param_summary)
+                 ) 
+            _eval_internal(
+                data = ctx.file.data,
+                model = new_model_file,
+                output = new_eval_output,
+                ctx = ctx
             )
             # Finally, add the files generated here to the list of default files for the rule
-            print("****")
-            print(eval_task)
-            print(eval_task.default_info)
-            files_to_build += eval_task.default_info.files
+            files_to_build.append(new_eval_output)
             
-    print(files_to_build)
-    fail("boom")
+    return DefaultInfo(files=depset(files_to_build))
 
 
 hyperparam_search = rule(
@@ -163,7 +163,7 @@ hyperparam_search = rule(
             cfg = "target",
             executable = True
         ),
-        "eval_outputs": attr.string_list(),
+        "eval_output": attr.string(),
         "train_executable": attr.label(
             cfg = "target",
             executable = True

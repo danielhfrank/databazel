@@ -27,6 +27,7 @@ def main(model_path, data_path, output_dir):
     with open(results_output, 'w') as f:
         # just cause I know that it's coming out as a scalar now
         f.write(str(results))
+        f.write('\n')
 
 
 if __name__ == "__main__":

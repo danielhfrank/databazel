@@ -1,4 +1,3 @@
-load("//:databazel.bzl", "empty")
 
 filegroup(
   name = "random_data",
@@ -40,5 +39,13 @@ py_runtime(
   # Do this to exclude file names with spaces, which bazel will reject.
   files = [x for x in glob(["deep-learning/**"]) if ' ' not in x],
   interpreter = "deep-learning/bin/python",
+  visibility = ["//visibility:public"]
+)
+
+py_runtime(
+  # clean-ish environment installed locally on galiano
+  name = "fresh",
+  files = [x for x in glob(["py2freshenv/**"]) if ' ' not in x],
+  interpreter = "py2freshenv/bin/python",
   visibility = ["//visibility:public"]
 )

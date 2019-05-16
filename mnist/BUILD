@@ -26,7 +26,6 @@ model(
     train_executable = ":train",
     training_data = "//:mnist_data",
     model = "bzl_model.h5py",
-    additional_outputs = ["model.json"]
 )
 
 evaluate(
@@ -35,5 +34,5 @@ evaluate(
     eval_executable = ":evaluate",
     test_data = "//:mnist_data",
     outputs = ["results.txt"],
-    model = ":bzl_model.h5py"
+    model = ":bzl_training"
 )

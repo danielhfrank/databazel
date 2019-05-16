@@ -43,7 +43,7 @@ def train(x_train, y_train):
     return model
 
 
-def main(data_path, model_filename, output_dir):
+def main(data_path, model_output_path):
     x_train, y_train = load_train_data(data_path)
     x_train = prep_x_data(x_train)
 
@@ -51,22 +51,13 @@ def main(data_path, model_filename, output_dir):
 
     model = train(x_train, y_train)
 
-    # First save model arch only so that I can read it
-    print 'Saving model architecture to json'
-    model_arch_output_path = os.path.join(output_dir, 'model.json')
-    model_json = model.to_json()
-    with open(model_arch_output_path, 'w') as f:
-        f.write(model_json)
-
     print 'Writing entire model (with weights)'
-    model_out_path = os.path.join(output_dir, model_filename)
-    model.save(model_out_path)
+    model.save(model_output_path)
 
 
 if __name__ == "__main__":
     parser = ArgumentParser()
     parser.add_argument('--data')
-    parser.add_argument('--model-output-filename')
-    parser.add_argument('--model-output-dir')
+    parser.add_argument('--model-output-path')
     args = parser.parse_args()
-    main(args.data, args.model_output_filename, args.model_output_dir)
+    main(args.data, args.model_output_path)

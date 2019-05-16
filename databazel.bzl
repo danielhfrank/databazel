@@ -2,13 +2,12 @@
 def _train_impl(ctx):
     args = [
         '--data', ctx.file.training_data.path,
-        '--model-output-filename', ctx.outputs.model.basename,
-        '--model-output-dir', ctx.outputs.model.dirname
+        '--model-output-path', ctx.outputs.model.path,
         ]
     
     ctx.actions.run(
         inputs = [ctx.file.training_data],
-        outputs = [ctx.outputs.model] + ctx.outputs.additional_outputs,
+        outputs = [ctx.outputs.model],
         arguments = args,
         progress_message = "Running training script with args %s" % args,
         executable = ctx.executable.train_executable
@@ -26,7 +25,6 @@ model = rule(
             executable = True
         ),
         "model": attr.output(),
-        "additional_outputs": attr.output_list()
     },
 )
 

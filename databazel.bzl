@@ -31,6 +31,9 @@ model = rule(
     },
 )
 
+def mk_param_summary(hyperparams):
+    return '__'.join([hpname + '_' + val for hpname, val in hyperparams.items()])
+
 def model_with_hyperparam_values(name,
                                  deps,
                                  training_data,
@@ -41,14 +44,16 @@ def model_with_hyperparam_values(name,
     for hyperparam_name, hyperparam_values in hyperparam_values_dict.items():
         for hyperparam_val in hyperparam_values:
             these_values = {hyperparam_name: hyperparam_val}
-            param_summary = '__'.join([hpname + '_' + val for hpname, val in these_values.items()])
+            param_summary = mk_param_summary(these_values)
             new_name = name + "__" + param_summary
+            model_name, extn = model_output.rsplit('.', 1)
+            new_model_name = model_name + '__' + param_summary + '.' + extn
             model(
                 name = new_name,
                 deps = deps,
                 training_data = training_data,
                 train_executable = train_executable,
-                model = model_output,
+                model = new_model_name,
                 hyperparams = these_values
             )
 

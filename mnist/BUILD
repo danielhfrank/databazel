@@ -33,6 +33,6 @@ evaluate(
     deps = [":lib"],
     eval_executable = ":evaluate",
     test_data = "//:mnist_data",
-    outputs = ["results.txt"],
+    outputs = ["results.json"],
     model = ":bzl_training"
 )

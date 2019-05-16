@@ -1,7 +1,7 @@
 from argparse import ArgumentParser
+import json
 import os
 
-import keras.backend as K
 from keras.models import load_model
 
 from mnist.lib import load_test_data, prep_x_data, prep_y_data
@@ -18,11 +18,10 @@ def main(model_path, data_path, output_dir):
     results = model.evaluate(x_test, y_test)
     # Write out the results of evaluation into file(s) in the output dir
     # For now just going to write out some text...
-    results_output = os.path.join(output_dir, 'results.txt')
+    results_output = os.path.join(output_dir, 'results.json')
     with open(results_output, 'w') as f:
-        # just cause I know that it's coming out as a scalar now
-        f.write(str(results))
-        f.write('\n')
+        result_dict = {mname: mvalue for mname, mvalue in zip(model.metrics_names, results)}
+        json.dump(result_dict, f)
 
 
 if __name__ == "__main__":

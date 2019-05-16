@@ -34,7 +34,7 @@ def train(x_train, y_train):
 
     model.compile(loss=keras.losses.categorical_crossentropy,
                   optimizer=keras.optimizers.Adadelta(),
-                  metrics=[])  # See comment in evaluate.py on cat accuracy fxn
+                  metrics=['accuracy'])
 
     model.fit(x_train, y_train,
               batch_size=batch_size,
@@ -46,7 +46,6 @@ def train(x_train, y_train):
 def main(data_path, model_filename, output_dir):
     x_train, y_train = load_train_data(data_path)
     x_train = prep_x_data(x_train)
-    # Will need to pass this to keras later on
 
     y_train = prep_y_data(y_train)
 

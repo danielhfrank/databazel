@@ -7,11 +7,6 @@ from keras.models import load_model
 from mnist.lib import load_test_data, prep_x_data, prep_y_data
 
 
-def get_categorical_accuracy_keras(y_true, y_pred):
-    # https://stackoverflow.com/questions/46305252/valueerror-dimension-1-must-be-in-the-range-0-2-in-keras  # noqa
-    return K.mean(K.equal(K.argmax(y_true, axis=1), K.argmax(y_pred, axis=1)))
-
-
 def main(model_path, data_path, output_dir):
     # Load the model
     model = load_model(model_path)

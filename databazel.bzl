@@ -125,7 +125,7 @@ def _hyperparam_search_impl(ctx):
                 ctx = ctx
             )
             # Finally, add the files generated here to the list of default files for the rule
-            files_to_build.append(new_eval_output)
+            files_to_build += [new_eval_output, new_model_file]
             
     return DefaultInfo(files=depset(files_to_build))
 

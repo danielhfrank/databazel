@@ -1,6 +1,5 @@
 load("//:databazel.bzl", "model")
 load("//:databazel.bzl", "evaluate")
-load("//:databazel.bzl", "model_with_hyperparam_values")
 load("//:databazel.bzl", "hyperparam_search")
 
 
@@ -24,15 +23,13 @@ py_binary(
     srcs = ["evaluate.py"],
 )
 
-model_with_hyperparam_values(
-    name = "bzl_training",
-    deps = [":lib"],
-    train_executable = ":train",
-    training_data = "//:mnist_data",
-    model_output = "bzl_model.h5py",
-    hyperparam_values_dict = {
-        "dense_size": ["64", "128"]
-    }
+model(
+  name = "bzl_training",
+  deps = ["//mnist:lib"],
+  training_data = "//:mnist_data",
+  train_executable = "//mnist:train",
+  model = "//mnist:bzl_model.h5py",
+  hyperparams = {"dense_size": "128"},
 )
 
 evaluate(
@@ -41,7 +38,7 @@ evaluate(
     eval_executable = ":evaluate",
     test_data = "//:mnist_data",
     outputs = ["results.json"],
-    model = ":bzl_training__dense_size_64"
+    model = ":bzl_training"
 )
 
 hyperparam_search(
@@ -51,6 +48,6 @@ hyperparam_search(
     train_executable = ":train",
     data = "//:mnist_data",
     eval_output = "result.json",
-    hyperparam_values = {"dense_size": ["64", "128"]},
+    hyperparam_values = {"dense_size": ["64", "32"]},
     model_name = "search_model.h5py"
 )

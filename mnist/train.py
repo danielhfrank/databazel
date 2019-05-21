@@ -33,7 +33,10 @@ def train(x_train, y_train, hyperparams):
     dense_size = int(hyperparams['dense_size'])
     model.add(Dense(dense_size, activation='relu'))
 
-    model.add(Dropout(0.5))
+    # final_dropout_frac = 0.5
+    final_dropout_frac = float(hyperparams['final_dropout_frac'])
+    model.add(Dropout(final_dropout_frac))
+
     model.add(Dense(num_classes, activation=tf.nn.softmax))
 
     model.compile(loss=keras.losses.categorical_crossentropy,

@@ -48,6 +48,9 @@ hyperparam_search(
     train_executable = ":train",
     data = "//:mnist_data",
     eval_output = "result.json",
-    hyperparam_values = {"dense_size": ["64", "32"]},
+    hyperparam_values = {
+        "dense_size": ["64", "32"],
+        "final_dropout_frac": ["0.25", "0.5"]
+    },
     model_name = "search_model.h5py"
 )

@@ -9,6 +9,20 @@ def insert_param_summary(filename, param_summary):
     basename, extn = filename.rsplit('.', 1)
     return basename + '__' + param_summary + '.' + extn
 
+def combinations(ll):
+    # This got kind of difficult because skylark doesn't allow recursion,
+    # but I think it's correct?
+    last_pass = []
+    cur_pass = [[]]
+    for l in ll:
+        last_pass = cur_pass
+        cur_pass = []
+        for elem in l:
+            for prev_combination in last_pass:
+                cur_pass.append(list(prev_combination) + [elem])
+    return cur_pass
+
+
 # Internal functions
 
 def _model_internal(data, model_output, hyperparams, ctx):

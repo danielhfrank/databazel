@@ -111,36 +111,37 @@ evaluate = rule(
 def _hyperparam_search_impl(ctx):
     # This impl is totally wrong but I'm going to just try to get a macro working
     files_to_build = []
-    for hyperparam_name, hyperparam_values in ctx.attr.hyperparam_values.items():
-        for hyperparam_val in hyperparam_values:
-            # Prep our new unique names for this run
-            these_values = {hyperparam_name: hyperparam_val}
-            param_summary = mk_param_summary(these_values)
-            new_name = ctx.attr.name + "__" + param_summary
-            new_model_name = insert_param_summary(ctx.attr.model_name, param_summary)
-            # This is going to create the new model file, which we need to declare...
-            new_model_file = ctx.actions.declare_file(new_model_name)
-            # Create the model training instance for this run
-            _model_internal(
-                data = ctx.file.data,
-                model_output = new_model_file,
-                hyperparams = these_values,
-                ctx = ctx
-            )
+    hyperparam_names, hyperparam_valuess = zip(*ctx.attr.hyperparam_values.items())
+    hyperparam_combinations = combinations(hyperparam_valuess)
+    for hyperparam_values in hyperparam_combinations:
+        # Prep our new unique names for this run
+        these_values = dict(zip(hyperparam_names, hyperparam_values))
+        param_summary = mk_param_summary(these_values)
+        new_name = ctx.attr.name + "__" + param_summary
+        new_model_name = insert_param_summary(ctx.attr.model_name, param_summary)
+        # This is going to create the new model file, which we need to declare...
+        new_model_file = ctx.actions.declare_file(new_model_name)
+        # Create the model training instance for this run
+        _model_internal(
+            data = ctx.file.data,
+            model_output = new_model_file,
+            hyperparams = these_values,
+            ctx = ctx
+        )
 
-            # And then also create an eval instance
-            new_eval_output = ctx.actions.declare_file(
-                    insert_param_summary(ctx.attr.eval_output, param_summary)
-                 ) 
-            _eval_internal(
-                data = ctx.file.data,
-                model = new_model_file,
-                output = new_eval_output,
-                ctx = ctx
-            )
-            # Finally, add the files generated here to the list of default files for the rule
-            files_to_build += [new_eval_output, new_model_file]
-            
+        # And then also create an eval instance
+        new_eval_output = ctx.actions.declare_file(
+                insert_param_summary(ctx.attr.eval_output, param_summary)
+                ) 
+        _eval_internal(
+            data = ctx.file.data,
+            model = new_model_file,
+            output = new_eval_output,
+            ctx = ctx
+        )
+        # Finally, add the files generated here to the list of default files for the rule
+        files_to_build += [new_eval_output, new_model_file]
+        
     return DefaultInfo(files=depset(files_to_build))
 
 

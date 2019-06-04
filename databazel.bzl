@@ -39,7 +39,6 @@ def _model_internal(data, model_output, hyperparams, ctx):
         arguments = args,
         progress_message = "Running training script with args %s" % args,
         executable = ctx.executable.train_executable,
-        # mnemonic = "MODEL%s" % mk_param_summary(hyperparams).replace('_', '')
     )
 
 def _eval_internal(data, model, output, ctx):
@@ -54,7 +53,6 @@ def _eval_internal(data, model, output, ctx):
         arguments = args,
         progress_message = "Running evaluation script with args %s" % args,
         executable = ctx.executable.eval_executable,
-        # mnemonic = "EVAL%s" % model.basename.rsplit('.', 1)[0].replace('_', '')
     )
 
 # Rule definitions

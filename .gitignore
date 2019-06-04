@@ -2,8 +2,10 @@
 
 *.pyc
 bazel-*
-deep-learning
-py2freshenv
-env-0
-env-1
+env-databazel-3/
+
+# This one is a little more interesting - deliberately ignoring data dir
+data/*
+
+
 

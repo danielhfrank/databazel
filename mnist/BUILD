@@ -29,7 +29,7 @@ model(
   training_data = "//:mnist_data",
   train_executable = "//mnist:train",
   model = "//mnist:bzl_model.h5py",
-  hyperparams = {"dense_size": "128"},
+  hyperparams = {"dense_size": "128", "final_dropout_frac": "0.5"},
 )
 
 evaluate(

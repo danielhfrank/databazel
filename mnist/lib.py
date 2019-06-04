@@ -12,12 +12,12 @@ num_classes = 10
 
 
 def load_train_data(path):
-    f = np.load(open(path))
+    f = np.load(open(path, 'rb'))
     return f['x_train'], f['y_train']
 
 
 def load_test_data(path):
-    f = np.load(open(path))
+    f = np.load(open(path, 'rb'))
     return f['x_test'], f['y_test']
 
 
@@ -38,4 +38,4 @@ def prep_y_data(y):
 if __name__ == "__main__":
     data = load_train_data(sys.argv[1])
     prepped_data = prep_x_data(data[0])
-    print prepped_data.shape
+    print(prepped_data.shape)

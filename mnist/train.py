@@ -58,7 +58,7 @@ def main(data_path, model_output_path, hyperparams):
 
     model = train(x_train, y_train, hyperparams)
 
-    print 'Writing entire model (with weights)'
+    print('Writing entire model (with weights)')
     model.save(model_output_path)
 
 

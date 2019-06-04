@@ -14,7 +14,6 @@ py_binary(
     deps = [":lib"],
     srcs = ["train.py"],
     # data = ["//:mnist_data"],
-    # args = ["data/mnist.npz", "/Users/df/code/databazel/model.h5py"]
 )
 
 py_binary(

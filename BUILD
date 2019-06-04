@@ -25,27 +25,9 @@ py_binary(
 
 
 py_runtime(
-  # Minimal bare environment
-  name = "env-1",
-  # Do this to exclude file names with spaces, which bazel will reject.
-  files = [x for x in glob(["env-1/**"]) if ' ' not in x],
-  interpreter = "env-1/bin/python",
-)
-
-
-py_runtime(
-  # Artisanal DL environment
-  name = "deep-learning",
-  # Do this to exclude file names with spaces, which bazel will reject.
-  files = [x for x in glob(["deep-learning/**"]) if ' ' not in x],
-  interpreter = "deep-learning/bin/python",
-  visibility = ["//visibility:public"]
-)
-
-py_runtime(
   # clean-ish environment installed locally on galiano
-  name = "fresh",
-  files = [x for x in glob(["py2freshenv/**"]) if ' ' not in x],
-  interpreter = "py2freshenv/bin/python",
+  name = "env-databazel-3",
+  files = [x for x in glob(["env-databazel-3/**"]) if ' ' not in x],
+  interpreter = "env-databazel-3/bin/python",
   visibility = ["//visibility:public"]
 )

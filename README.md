@@ -1,3 +1,6 @@
+# databazel
+![black sun](https://images.emojiterra.com/google/android-nougat/512px/1f54b.png)
+
 # Background
 
 Computing can be complicated. As programmers, we naturally want to decompose a complex process into simpler steps. but how do those steps fit together? Before long, we always turn to DAGs. When building software, we can express build DAGs in `make`. In the realm of data pipelines, tools like `luigi` and `airflow` similarly create DAGs to describe computations made over data. I thought, "we need to build software to run our data analysis workflows, but we use different tools to describe the DAGs to build the two. Why?". With a little too much time on my hands, I created `databazel` to unify the two.
@@ -10,13 +13,13 @@ In addition to the bazel rules, there is an example workflow in the `mnist` dire
 
 # Run
 (preamble about data setup)
-You can run model training by running `bazel build --python_top=//:databazel3 //mnist:bzl_training`
+You can run model training by running `bazel build --python_top=//:env-databazel-3 //mnist:bzl_training`
 Why `--python_top`?
   It's what we have to do to make bazel use the python environment set up for our purposes. It's lame. With a different implementation of training we wouldn't need it
 Why `bazel build`?
   You may think of model training as being something that you run. But this is a software build tool, so it thinks that it's building something. If you think of it as building a trained model, you'll be able to live with it.
   
-Training a model isn't cool. You know what's cool? Training a bunch of models. Automatically. To do a hyperparameter grid search, do `bazel build --python_top=//:databazel3 //mnist:bzl_search`
+Training a model isn't cool. You know what's cool? Training a bunch of models. Automatically. To do a hyperparameter grid search, do `bazel build --python_top=//:env-databazel-3 //mnist:bzl_search`
 
 This will kick off training runs for each combination of specified hyperparameters, and then a model evaluation run for each of them, and write out all the results.
 

@@ -12,12 +12,16 @@ Computing can be complicated. As programmers, we naturally want to decompose a c
 In addition to the bazel rules, there is an example workflow in the `mnist` directory. `databazel` itself does not implement all of the steps above - rather, it specifies how they fit together and depend on one another. A hypothetical user would be responsible for writing training and evaluation scripts that conform to `databazel`'s expected interfaces.
 
 # Run
-(preamble about data setup)
-You can run model training by running `bazel build --python_top=//:env-databazel-3 //mnist:bzl_training`
-Why `--python_top`?
-  It's what we have to do to make bazel use the python environment set up for our purposes. It's lame. With a different implementation of training we wouldn't need it
-Why `bazel build`?
-  You may think of model training as being something that you run. But this is a software build tool, so it thinks that it's building something. If you think of it as building a trained model, you'll be able to live with it.
+To run this example, first run `setup.sh` to prep the data. It's lame, I could make data-fetching happen in bazel, but this isn't my day job.
+You can then run model training by running `bazel build --python_top=//:env-databazel-3 //mnist:bzl_training`
+
+> Why `--python_top`?
+
+It's what we have to do to make bazel use the python environment set up for our purposes. It's lame. With a different implementation of training we wouldn't need it
+
+> Why `bazel build`?
+
+You may think of model training as being something that you run. But this is a software build tool, so it thinks that it's building something. If you think of it as building a trained model, you'll be able to live with it.
   
 Training a model isn't cool. You know what's cool? Training a bunch of models. Automatically. To do a hyperparameter grid search, do `bazel build --python_top=//:env-databazel-3 //mnist:bzl_search`
 

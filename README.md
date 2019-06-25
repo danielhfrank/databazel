@@ -1,5 +1,5 @@
 # databazel
-![lol](https://www.dictionary.com/e/wp-content/uploads/2018/03/Upside-Down_Face_Emoji-300x300.png)
+![databazel](https://user-images.githubusercontent.com/409199/60114102-f87d7100-9727-11e9-886e-10aeebe437e1.png)
 
 # Background
 

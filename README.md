@@ -1,5 +1,5 @@
 # databazel
-![black sun](https://images.emojiterra.com/google/android-nougat/512px/1f54b.png)
+![lol](https://www.dictionary.com/e/wp-content/uploads/2018/03/Upside-Down_Face_Emoji.png)
 
 # Background
 

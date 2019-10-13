@@ -74,17 +74,23 @@ def main(data_path, model_output_path, hyperparams):
     model = mk_model(hyperparams)
     optimizer = tf.keras.optimizers.Adam()
 
-    compute_loss = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)
+    compute_loss = tf.keras.losses.SparseCategoricalCrossentropy(
+        from_logits=True)
 
     compute_accuracy = tf.keras.metrics.SparseCategoricalAccuracy()
-    
-    step, loss, accuracy = train(dataset, model, optimizer, compute_loss, compute_accuracy)
 
+    # # Set run-eager to try to really-actually run eagerly and use breakpoint
+    # tf.config.run_functions_eagerly(True)
 
-    # model = train(x_train, y_train, hyperparams)
+    step, loss, accuracy = train(
+        dataset, model, optimizer, compute_loss, compute_accuracy)
+
+    print('Final step', step, ': loss', loss,
+          '; accuracy', compute_accuracy.result())
 
     print('Writing entire model (with weights)')
     model.save(model_output_path)
+
 
 def train_one_step(model, optimizer, x, y, compute_loss, compute_accuracy):
     with tf.GradientTape() as tape:
@@ -105,12 +111,12 @@ def train(train_ds, model, optimizer, compute_loss, compute_accuracy):
     accuracy = 0.0
     for x, y in train_ds:
         step += 1
-        loss = train_one_step(model, optimizer, x, y, compute_loss, compute_accuracy)
+        loss = train_one_step(model, optimizer, x, y,
+                              compute_loss, compute_accuracy)
         if step % 10 == 0:
-            tf.print('Step', step, ': loss', loss, '; accuracy', compute_accuracy.result())
+            tf.print('Step', step, ': loss', loss,
+                     '; accuracy', compute_accuracy.result())
     return step, loss, accuracy
-
-
 
 
 if __name__ == "__main__":

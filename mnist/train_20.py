@@ -72,21 +72,45 @@ def main(data_path, model_output_path, hyperparams):
 
     # import pdb; pdb.set_trace()
     model = mk_model(hyperparams)
-
-    for images,labels in dataset.take(1):
-        print("Logits: ", model(images[0:1]).numpy())
-    print(tf.executing_eagerly())
-    return
+    optimizer = tf.keras.optimizers.Adam()
 
     compute_loss = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)
 
     compute_accuracy = tf.keras.metrics.SparseCategoricalAccuracy()
-    embed()
+    
+    step, loss, accuracy = train(dataset, model, optimizer, compute_loss, compute_accuracy)
+
 
     # model = train(x_train, y_train, hyperparams)
 
     print('Writing entire model (with weights)')
     model.save(model_output_path)
+
+def train_one_step(model, optimizer, x, y, compute_loss, compute_accuracy):
+    with tf.GradientTape() as tape:
+        logits = model(x)
+        loss = compute_loss(y, logits)
+
+    grads = tape.gradient(loss, model.trainable_variables)
+    optimizer.apply_gradients(zip(grads, model.trainable_variables))
+
+    compute_accuracy(y, logits)
+    return loss
+
+
+@tf.function
+def train(train_ds, model, optimizer, compute_loss, compute_accuracy):
+    step = 0
+    loss = 0.0
+    accuracy = 0.0
+    for x, y in train_ds:
+        step += 1
+        loss = train_one_step(model, optimizer, x, y, compute_loss, compute_accuracy)
+        if step % 10 == 0:
+            tf.print('Step', step, ': loss', loss, '; accuracy', compute_accuracy.result())
+    return step, loss, accuracy
+
+
 
 
 if __name__ == "__main__":

@@ -2,7 +2,7 @@
 
 *.pyc
 bazel-*
-env-databazel-3/
+env-*
 
 # This one is a little more interesting - deliberately ignoring data dir
 data/*

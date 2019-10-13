@@ -37,32 +37,22 @@ def mk_model(hyperparams):
     # final_dropout_frac = 0.5
     final_dropout_frac = float(hyperparams['final_dropout_frac'])
 
-    # model = tf.keras.Sequential((
-    #     tf.keras.layers.Reshape(target_shape=(28 * 28,), input_shape=(28, 28)),
-    #     tf.keras.layers.Dense(100, activation='relu'),
-    #     tf.keras.layers.Dense(100, activation='relu'),
-    #     tf.keras.layers.Dense(10)))
+    input_shape = (28, 28, 1)
 
-    input_shape = (28, 28)
+    model = tf.keras.Sequential()
+    model.add(tf.keras.layers.Conv2D(32, kernel_size=(3, 3),
+                                     activation='relu',
+                                     input_shape=input_shape))
+    model.add(tf.keras.layers.Conv2D(64, (3, 3), activation='relu'))
+    model.add(tf.keras.layers.MaxPooling2D(pool_size=(2, 2)))
+    model.add(tf.keras.layers.Dropout(0.25))
+    model.add(tf.keras.layers.Flatten())
 
-    model = tf.keras.Sequential((
-        tf.keras.layers.Conv2D(32, kernel_size=(3, 3),
-                               activation='relu',
-                               input_shape=input_shape),
-        tf.keras.layers.Conv2D(64, (3, 3), activation='relu'),
-        tf.keras.layers.MaxPooling2D(pool_size=(2, 2)),
-        tf.keras.layers.Dropout(0.25),
-        tf.keras.layers.Flatten(),
+    model.add(tf.keras.layers.Dense(dense_size, activation=tf.nn.relu))
 
+    model.add(tf.keras.layers.Dropout(final_dropout_frac))
 
-        tf.keras.layers.Dense(dense_size, activation=tf.nn.relu),
-
-
-        tf.keras.layers.Dropout(final_dropout_frac),
-
-        tf.keras.layers.Dense(num_classes, activation=tf.nn.softmax)
-    )
-    )
+    model.add(tf.keras.layers.Dense(num_classes, activation=tf.nn.softmax))
 
     model.build()
     return model
@@ -73,11 +63,26 @@ def main(data_path, model_output_path, hyperparams):
     x_train = prep_x_data(x_train)
 
     # y_train = prep_y_data(y_train)
+    y_train = tf.cast(y_train, tf.float64)
+
+    dataset = tf.data.Dataset.from_tensor_slices((x_train, y_train))
+    dataset = dataset.shuffle(1000).batch(32)
 
     from IPython import embed
-    import pdb; pdb.set_trace()
+
+    # import pdb; pdb.set_trace()
     model = mk_model(hyperparams)
+
+    for images,labels in dataset.take(1):
+        print("Logits: ", model(images[0:1]).numpy())
+    print(tf.executing_eagerly())
+    return
+
+    compute_loss = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)
+
+    compute_accuracy = tf.keras.metrics.SparseCategoricalAccuracy()
     embed()
+
     # model = train(x_train, y_train, hyperparams)
 
     print('Writing entire model (with weights)')
